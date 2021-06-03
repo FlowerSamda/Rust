@@ -28,4 +28,4 @@ fn main() {
 
 fn c_to_f_inverter(celcius: f64) -> f64 {
     celcius * 1.8 + 32.0
-}
+}0
