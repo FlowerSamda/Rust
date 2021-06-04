@@ -52,5 +52,51 @@ fn main() {
     let none = plus_one(None);
 
     println!("five: {:?}, six: {:?}, none: {:?}", five, six, none);
+
+    let some_u8_value = Some(3u8);
+
+    match some_u8_value {
+        Some(3) => println!("three"),
+        _ => (),
+    }
+
+    // if let
+    /* 어떤 값이 Some(3)에 매칭될 때 뭔가를 하지만, 한개만을 위해 쓰기엔 너무 장황함
+
+    let some_u8_value = Some(0u8);
+    match some_u8_value {
+        Some(3) => println!("three"),
+        _ => (),
+    }
+    */
+    // if let 코드는 바로 위의 매치 식과 동일하게 동작 ( if let 제외는 모두 무시)
+    if let Some(3) = some_u8_value {
+        println!("three");  // Some(3)은 match의 패턴이고 println!부분은 match의 갈래라고 생각하면 됨.
+    }
+    
+    // if let + else   Quarter면 프린트, 아니면 count += 1
+    let mut count = 0;
+
+    let coin = Coin::Penny;
+    /*
+    if let 사용 안할 시
+    match coin {
+        Coin::Quarter(state) => println!("State quarter from {:?}!", state),
+        _ => count += 1,
+    }
+    */
+
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {:?}!", state);
+    } else {
+        count += 1;
+        println!("{}",count)
+    }
+
+    
+
+
 }
+
+
 
