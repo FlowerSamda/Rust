@@ -37,13 +37,14 @@ mod outermost {
 // 2. middle_function은 공개이므로, outermost 모듈의 바깥에 있는 try_me에서 접근 가능
 // 3. middle_secret_function은 비공개이므로, outermost 모듈의 바깥에 있는 try_me에서 호출 불가능
 // 4. inside 모듈은 비공개이므로, 애초에 try_me가 outermost의 바깥에 있기에 접근 불가
+/*
 fn try_me() {
     outermost::middle_function();
     outermost::middle_secret_function();  // private function error
     outermost::inside::inner_function();  // private module error
     outermost::inside::secret_function(); // private module error
 }
-/*
+
 mod outermost {
     pub fn middle_function() {}
 
@@ -90,26 +91,42 @@ mod outermost {
 */
 
 // 여기서부터 보기 https://rinthel.github.io/rust-lang-book-ko/ch07-02-controlling-visibility-with-pub.html
-mod outermost {
+/*
+pub mod outermost {
     pub fn middle_function() {}
 
-    fn middle_secret_function() {}
+    pub fn middle_secret_function() {}
 
-    mod inside {
+    pub mod inside {
         pub fn inner_function() {
+            //outermost::middle_secret_function()
             //앞의 :: 는 이 루트 모듈로부터 시작하여 모듈 참조를 하겠다는 것
-            ::outermost::middle_secret_function()
+            //이거 외않되
         }
 
-        fn secret_function() {}
+        pub fn secret_function() {}
     }
 }
+*/
+
+// 각 모듈들은 "현재" 모듈을 기준으로 상대적!
+// ex) test 모듈 내에서는 communicator가 위에있다!
+//communicator
+// ├── client
+// ├── network
+// |   └── client
+// └── tests
+
+
 
 
 #[cfg(test)]
 mod tests {
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        use super::client;
+        // super : 계층구조 상 현재 모듈로부터 한 모듈 올라감
+        // use super::something시, 부모모듈에 상대적인 경로가 되게 해줌
+        client::connect();
     }
 }
