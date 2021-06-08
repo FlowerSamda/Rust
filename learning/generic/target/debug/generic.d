@@ -1,1 +1,1 @@
-/workspace/Rust/learning/generic/target/debug/generic: /workspace/Rust/learning/generic/src/main.rs
+/home/runner/Rust/learning/generic/target/debug/generic: /home/runner/Rust/learning/generic/src/main.rs
