@@ -66,7 +66,7 @@ fn main() {
     };
 
     // 트레잇을 한 번 구혆면, 트레잇의 일부가 아닌 메소드를 호출했던 것과 동일한 방식으로 인스턴스 상 호출 가능!!
-    println!("1 new tweet: {}", tweet.summary())
+    println!("1 new tweet: {}", tweet.summary());
 
 
     // 만약 트레잇이 동일 scope 내에 있지 않고, aggregator라는 크레이트에 대한 것이라면...?
@@ -109,9 +109,107 @@ fn main() {
 
     // ex) Vec에 Display가 있는데 또 쳐만드는 것 등
 
-    // 기본구현부터 시작
+    // https://www.youtube.com/watch?v=L-03Rc4j_9g
 
-    https://www.youtube.com/watch?v=L-03Rc4j_9g
 
-    //test
-}
+    // 기본 구현
+    // 이를 상속한 모든 구현체가 커스텀 동작을 하는 것 말고, 기본 동작을 갖추는 것이 필요할 때!
+    // -> 기본 구현(동작)을 유지하거나, 오버라이드하도록 할 수 있음
+
+    pub trait Summarizable_plus {
+        fn author_summary(&self) -> String;
+        // author_summary를 구현하도록 하고, summary메소드가 이를 호출하는 기본 구현
+        fn summary_plus(&self) -> String {
+            format!("(Read more from {}...)", self.author_summary())
+        }
+    }
+
+    //summary_plus의 기본 구현 사용을 위해서는 이렇게 사용
+    // impl summary_plus for NewsArticle {}
+
+    impl Summarizable_plus for Tweet {
+        fn author_summary(&self) -> String {
+            format!("@{}", self.username)
+        }
+    }
+
+    println!("1 new tweet: {}", tweet.summary_plus());
+
+
+    // 트레잇 바운드
+    // 제네릭 타입 파라미터를 이용하는 트레잇: 제네릭 타입에 제약을 가함
+    // -> 제네릭 타입에 대해 트레잇 바운드를 사용했다면, 제네릭 타입을 가진 파라미터가 그 트레잇을 반드시 구현했다는 것을 알려줌
+
+    //notify라는 함수명 뒤에 <T: 트레잇 명>(parameter: T)로 선언
+    // ->이는 T타입의 파라미터가 그 트레잇을 구현했다는 것을 의미
+    pub fn notify<T: Summarizable>(item: T) {
+        println!("Breking news! {}", item.summary());
+    }
+
+    // 여러 트레잇을 가진 제네릭 타입에 대한 표시
+    // -> fn some_function<T: Display + Clone, U: Clone + Debug>(t: T, u: U) -> i32 {
+    // where 절을 이용하면 더 보기 쉬워짐
+    /* 
+    fn some_function<T, U>(t: T, u: U) -> i32
+        where T: Display + Clone,
+            U: Clone + Debug 
+    {
+    }
+    */
+        
+    // 이런 Trait bound를 사용하여, generic에서의 largest함수 고치기!
+    fn largest_generic<T: PartialOrd + Copy>(list: &[T]) -> T {
+        let mut largest = list[0];
+
+        for &item in list.iter() {
+            // 오류 지점
+           if item > largest {
+               //오류 지점
+               //`T` might need a bound for `std::cmp::PartialOrd` 오류 발생
+               largest = item;
+            }
+        }
+        largest
+    }
+
+    let numbers = vec![34, 50, 25, 100, 65];
+
+    let result = largest_generic(&numbers);
+    println!("The largest number is {}", result);
+
+    let chars = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_generic(&chars);
+    println!("The largest char is {}", result);    
+
+
+    //Copy 트레잇을 이용하지않고, 참조자로 굴러가보도록 해보기!
+    
+    fn largest_generic_2<T: PartialOrd>(list: &[T]) -> &T {
+        
+        let mut largest = &list[0];  // largest = &&T[0]
+
+        // iter() ->&T
+        for item in list.iter() {
+            // 오류 지점
+           if item > largest {
+               //오류 지점
+               //`T` might need a bound for `std::cmp::PartialOrd` 오류 발생
+               largest = item;
+            }
+        }
+        largest
+    }
+
+    let numbers = vec![34, 50, 25, 100, 65];
+
+    let result = largest_generic_2(&numbers);
+    println!("The largest number is {}", result);
+
+    let chars = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest_generic_2(&chars);
+    println!("The largest char is {}", result);    
+    
+
+}   
