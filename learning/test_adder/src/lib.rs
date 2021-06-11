@@ -1,3 +1,5 @@
+// 이 어노테이션은 우리가 cargo test를 실행시킬 때에만 컴파일하고 실행시키라고 말하는 것
+// cfg: 환경설정(configuration) 여기선 환경값 = test -> #[test]함수만 실행하게됨.
 #[cfg(test)]
 mod tests {
 	
@@ -152,6 +154,11 @@ mod tests {
 			}
 		}
 		
+	
+	
+	// 테스트 추가 명령어들 모음
+	// https://rinthel.github.io/rust-lang-book-ko/ch11-02-running-tests.html
+	
 		
 		
 		
