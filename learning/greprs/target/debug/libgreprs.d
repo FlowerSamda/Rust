@@ -1,1 +1,1 @@
-/workspace/Rust/Rust/learning/greprs/target/debug/libgreprs.rlib: /workspace/Rust/Rust/learning/greprs/src/lib.rs
+/home/flowersamda/Rust/learning/greprs/target/debug/libgreprs.rlib: /home/flowersamda/Rust/learning/greprs/src/lib.rs
