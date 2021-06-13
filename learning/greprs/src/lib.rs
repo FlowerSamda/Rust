@@ -8,7 +8,7 @@ use std::env;
 pub struct Config {
 	pub query: String,
 	pub filename: String,
-	pub case_sensitive: bool,
+	pub case_sensitive_env: bool,
 	pub case_sensitive_args: bool,
 } 
 // 개인과제: 환경변수(var), 커맨드라인 인수(args) 둘 다 받는데, 그 우선순위를 조절해보기
@@ -29,16 +29,25 @@ impl Config {
 		Ok(Config { query, filename, case_sensitive})*/
 
 		if args.len() < 4{
-			return err("not enough arguments");
-
-			let query = args[1].clone();
-			let filename = args[2].clone();
-			let case_sensitive_args = args[3].clone();
-
-			let case_sensitive_env = env::var("CASE_INSENSITIVE").is_err();
-
-			Ok(~~~)
+			return Err("not enough arguments");
 		}
+
+		let query = args[1].clone();
+		let filename = args[2].clone();
+		let case_sensitive_args:bool = false;  // default == false
+		let mut case_sensitive_args;
+		if &args[3] == "true" {
+			case_sensitive_args = true;
+		} else if &args[3] == "false" {
+			case_sensitive_args = false;
+		} else {
+			return Err("you can input only between true or false for case_sensitive_args")
+		}
+
+		let case_sensitive_env = env::var("CASE_INSENSITIVE").is_err();
+
+		Ok(Config { query, filename, case_sensitive_env, case_sensitive_args})
+		
 
 	}
 }
@@ -52,7 +61,7 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 	
 	let mut contents = String::new();
 	f.read_to_string(&mut contents)?;
-	
+	/*
 	// case_sensitive: true -> 대소문자구별, false: 모두 소문자로 바꿔서 상관없게 만듦
 	let results = if config.case_sensitive {
 		search(&config.query, &contents)
@@ -65,6 +74,29 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 	}
 	
 	Ok(())
+	*/
+
+	// 과제: 커맨드라인 인수를 우선순위 -> and이어야지 false (args == true -> 무조건 true)
+
+	let mut case_sensitive;
+	if config.case_sensitive_args && config.case_sensitive_env == false {
+		case_sensitive = false;
+	} else {
+		case_sensitive = true;
+	}
+
+	let results = if case_sensitive {
+		search(&config.query, &contents)
+	} else {
+		search_case_insensitive(&config.query, &contents)
+	};
+
+	for line in results {
+		println!("{}", line)
+	}
+	
+	Ok(())
+
 }
 
 pub fn search<'a> (query: &str, contents: &'a str) -> Vec<&'a str> {
