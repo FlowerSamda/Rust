@@ -162,6 +162,7 @@ struct Cacher<T>
 
 
 //impl에 트레잇 바운드를 붙인건가????????
+// -> impl 바로 뒤에 T를 정의해야, 타입 Struct<T> 메소드를  구현할 때 사용할 수 있음... 복습하자...
 impl<T> Cacher<T>
     where T: Fn(u32) -> u32
 {
