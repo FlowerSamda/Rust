@@ -7,11 +7,13 @@ use greprs::run;
 
 fn main() {
     
+	/*
 	// 커맨드라인 인자 허용하기
 	
 	// env::args(): 반복자 형식으로 커맨드라인 인자들을 우리 프로그램에 전달
 	let args: Vec<String> = env::args().collect();  // args = ["target/debug/greprs", "hello", "123"]
 	// 벡터의 첫번째 값은 바이너리의 이름(target/debug/greprs)
+	
 	
 	// unwrap_or_else : Ok시는 unwrap과 유사(값 반환), Err 시 closure의 코드 호출
 	let config = Config::new(&args).unwrap_or_else(|err| {
@@ -19,6 +21,13 @@ fn main() {
 		eprintln!("Problem parsing arguments: {}", err);  // unwrap: Ok ->반환, Err ->패닉, eprintln!으로 표준에러 사용
 		process::exit(1);  // 프로그램을 즉시 중단시키고, 종료상태 코드로 전달받은 값(1)을 반환
 		});
+	*/
+
+	// Iterator 적용 후 (13장)
+	let config = Config::new(env::args()).unwrap_or_else(|err| {
+		eprintln!("Problem parsing arguments: {}", err);
+		process::exit(1);
+	});
 	
 	println!("Searching for {}", config.query);
 	println!("In file {}", config.filename);

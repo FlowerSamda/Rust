@@ -13,7 +13,9 @@ pub struct Config {
 } 
 // 개인과제: 환경변수(var), 커맨드라인 인수(args) 둘 다 받는데, 그 우선순위를 조절해보기
 impl Config {
-	pub fn new(args: &[String]) -> Result<Config, &'static str> {
+	pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+		args.next();
+
 		/*
 		if args.len() < 3 {
 			// Err로 포장된 문자열 리터럴을 반환하는데, 문자열 리터럴은 &'static str 임! (10장)
@@ -27,26 +29,34 @@ impl Config {
 		let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
 		
 		Ok(Config { query, filename, case_sensitive})*/
+		println!("{}",args.len());  // 3 : next를 쓰면 개수가 줄어들어서?
 
-		if args.len() < 4{
-			return Err("not enough arguments");
-		}
+		let query = match args.next() {
+			Some(arg) => arg,
+			None => return Err("Didn't get a qeury string"),
+		};
 
-		let query = args[1].clone();
-		let filename = args[2].clone();
-		let case_sensitive_args:bool = false;  // default == false
-		let mut case_sensitive_args;
-		if &args[3] == "true" {
-			case_sensitive_args = true;
-		} else if &args[3] == "false" {
-			case_sensitive_args = false;
+		let filename = match args.next() {
+			Some(arg) => arg,
+			None => return Err("Didn't get a file name")
+		};
+
+		let case_senistive_args_option = match args.next() {
+			Some(arg) => arg,
+			None => return Err("Didn't get a case_sensitive option")
+		};
+
+		let case_sensitive_args = if case_senistive_args_option == String::from("true") {
+			true
+		} else if case_senistive_args_option == String::from("fasle") {
+			false
 		} else {
 			return Err("you can input only between true or false for case_sensitive_args")
-		}
+		};
 
 		let case_sensitive_env = env::var("CASE_INSENSITIVE").is_err();
 
-		Ok(Config { query, filename, case_sensitive_env, case_sensitive_args})
+		Ok(Config { query, filename, case_sensitive_env, case_sensitive_args} )
 		
 
 	}
@@ -100,6 +110,7 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 }
 
 pub fn search<'a> (query: &str, contents: &'a str) -> Vec<&'a str> {
+	/*
 	let mut results = Vec::new();
 	
 	for line in contents.lines() {
@@ -109,10 +120,19 @@ pub fn search<'a> (query: &str, contents: &'a str) -> Vec<&'a str> {
 	}
 	
 	results
+	*/
+	// 반복자 어댑터로 변경
+
+	contents.lines()
+		.filter(|line| line.contains(query))
+		.collect()
+
 }
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) ->Vec<&'a str> {
+	
 	let query = query.to_lowercase();  // 이를 이용해 대소문자 관계 없이 만듦, to_lowercase는 새로운 데이터를 생성함 -> String 반환
+	/*
 	let mut results = Vec::new();
 
 	for line in contents.lines() {
@@ -123,6 +143,12 @@ fn search_case_insensitive<'a>(query: &str, contents: &'a str) ->Vec<&'a str> {
 	}
 
 	results
+	*/
+
+	// 반복자 사용
+	contents.lines()
+		.filter(|x| x.to_lowercase().contains(&query))
+		.collect()
 }
 
 
