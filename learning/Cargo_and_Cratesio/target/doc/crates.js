@@ -1,0 +1,1 @@
+window.ALL_CRATES = ["Cargo_and_Cratesio"];
