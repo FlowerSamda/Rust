@@ -62,8 +62,8 @@ mod tests {
 
     impl Messenger for MockMessenger {
         fn send(&self, message: &str) {
-            self.sent_messages.push(String::from(message));  // send시 보내진 메시지 구조체에 push
-            // RefCell 객체이기에, 
+            self.sent_messages.borrow_mut().push(String::from(message));  // send시 보내진 메시지 구조체에 push
+            // RefCell 객체이기에, 내부 가변성을 통해 push 가능, &mut self가 아님에도 불구하고!!!
         }
     }
 
