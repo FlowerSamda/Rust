@@ -134,14 +134,17 @@ fn main() {
     let handle = thread::spawn(|| {
         // 클로저는 v를 사용하여 v는 캡쳐되어 클로저의 환경일부가 됨
         // 그래서, thread::spawn이 이 클로저를 새로운 스레드 내에서 실행하기에
-        // v는 새로운 스레드에서 접근 가능해야하지만, 
+        // v는 새로운 스레드에서 접근 가능해야함!
         println!("Here's a vector: {:?}", v);  // {:?}는 참조자를 필요로 함. 하지만, "얼마나 참조자가 유효한지 모름"
+        // 따라서, 항상 유효할 것인지 알지 모르므로 오류!
     });
     */
 
-    let handle = thread::spawn(|| {
-        println!("Here's a vector: {:?}", v); // v를 캡쳐(소유권 획득)하지 않았기에, 오류!
+    let handle = thread::spawn(move || {
+        println!("Here's a vector: {:?}", v); // move를 통해 사용하는 값의 소유권을 강제로 가짐!
     });
+
+    // drop(v);  스레드에서 move를 사용한 시점부터 v는 스레드 환경으로 넘어가기에, 메인스레드에서 드랍 불가
 
     handle.join().unwrap();
 }
