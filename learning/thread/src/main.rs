@@ -148,3 +148,8 @@ fn main() {
 
     handle.join().unwrap();
 }
+
+// 결론
+
+// 러스트의 thread::spawn과 클로저, join, move를 사용하면 
+// 메인스레드와 서브스레드간의 통신을 원활하게 할 수 있다!
