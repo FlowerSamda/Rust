@@ -1,0 +1,1 @@
+/home/flowersamda/Rust/learning/object_oriented/target/debug/libobject_oriented.rlib: /home/flowersamda/Rust/learning/object_oriented/src/blog/mod.rs /home/flowersamda/Rust/learning/object_oriented/src/lib.rs

@@ -1,6 +1,38 @@
 pub struct Post {
-    state: Option<Box<State>>,
     content: String,
+}
+
+// 상태와 동작을 타입처럼 인코딩하기
+// -> 상태는 결국 타입(구조체)에 의해 구별된다!
+// content 메소드를 가지지 않게하여, 메소드 접근시 존재하지 않는다는 컴파일 에러 반환
+pub struct DraftPost {
+    content: String,
+}
+
+impl DraftPost {
+    pub fn add_text(&mut self, text: &str) {
+        self.content.push_str(text);
+    }
+
+    // self를 취하므로, DraftPost를 소비하여 PendingReviewPost로 변환
+    pub fn request_review(self) -> PendingReviewPost {
+        PendingReviewPost {
+            content: self.content,
+        }
+    }
+}
+
+pub struct PendingReviewPost {
+    content: String,
+}
+
+impl PendingReviewPost {
+    // self를 취하므로, PendingReviewPost를 소비하여 Post로 변환
+    pub fn approve(self) -> Post {
+        Post {
+            content: self.content,
+        }
+    }
 }
 
 // 상태 패턴의 장점
@@ -8,12 +40,20 @@ pub struct Post {
 
 impl Post {
 
+    /*
     // 기본적으로 Post 객체는 비공개이기에, 다른 상태로 Post를 생성할 방법은 없음!
     pub fn new() -> Post {
         Post {
             // Post 객체에 state, content 설정
             state: Some(Box::new( Draft {} )),  // Draft 구조체의 새 인스턴스를 가진 Box를 보유한 Some 값
             content: String::new()
+        }
+    }
+    */
+
+    pub fn new() -> DraftPost {
+        DraftPost {
+            content: String::new(),
         }
     }
 
@@ -27,8 +67,14 @@ impl Post {
     // 게시물이 검토 완료 상태 전까지는 빈 스트링을 반환해야하기에 항상 비어있어야함!
     pub fn content(&self) -> &str {
         // state.as_ref()는 무조건 Some(&T)이기에, unwrap()으로 패닉이 절대 발생하지 않음
-        self.state.as_ref().unwrap().content(&self)
+        // self.state.as_ref().unwrap().content(&self)
+
+        // 안정적이게 변경 (DraftPost 구조체 사용)
+        &self.content
     }
+
+    /* 이전에 상태라는 필드를 사용한 코드
+
 
     // Post의 현재 상태 상에서 이 메소드를 호출하면, 현재의 상태를 소비하고 새로운 상태를 반환
     pub fn request_review(&mut self) {
@@ -44,6 +90,7 @@ impl Post {
             self.state = Some(s.approve())         // Draft.app~~ or PendingReview.req~~~ ...
         }
     }
+    */
 
 }
 
@@ -110,3 +157,11 @@ impl State for Published {
 // 각 상태에 가져야 하는 서로 다른 종류의 동작을 캡슐화하기 위하여 객체지향 상태 패턴을 구현함
 // 게시된 게시물이 취할 수 있는 서로 다른 방법을 알기 위해선,
 // 단 한 곳(Published 구조체의 State 트레잇)만을 확인하면 됨!
+
+// 다만, 각 상태를 다루는 구조체에 중복된 코드가 들어가는 것을 State 구조체에서 self로 넣어버리면,
+// 어느 구체적인 self인지 알 수 없으므로 객체 안전성이 위배될 수 있어서, 어쩔 수 없이 중복이 생김.
+
+
+// 객체 지향언어에서 정의하는 것과 동일하게 상태 패턴을 구현함으로써, 우리가 사용할 수 있는 러스트의
+// 강점을 모두 이용하지 못하고있기에, 유효하지 않은 상태 및 전환이 컴파일 타임 에러가 될 수 있도록
+// 하기 위하여, blog crate에 변경 시작

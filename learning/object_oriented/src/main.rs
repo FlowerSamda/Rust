@@ -18,10 +18,12 @@
 // 3. 게시물이 승인되면 게시됨
 // 4. 오직 게시된 블로그 게시물만이 출력될 내용물을 반환하기에, 승인되지 않은 게시물은 무조건 게시 불가
 
-extern crate blog;
-use blog::Post;
+extern crate object_oriented;
+use object_oriented::blog::Post;
 
 fn main() {
+    /* 타입인코딩이 없을시 코드
+
     // 오직 Post 타입과만 상호작용하는데, 이 타입은 상태 패턴을 사용하며 게시물이 가질 수 있는
     // 초안, 리뷰 대기중, 게시됨을 나타내는 세가지 상태 중 하나가 될 값을 보유
 
@@ -35,4 +37,23 @@ fn main() {
 
     post.approve();
     assert_eq!("I ate a salad for lunch today", post.content());  // 승인 후 표시가 됨
+    */
+
+    let mut post = Post::new();
+
+    post.add_text("I'm Rustacean");
+
+    let post = post.request_review();
+
+    let post = post.approve();
+
+    assert_eq!("I'm Rustacean", post.content())
+
 }
+
+// 결론
+
+// 객체 지향 프로그래밍에서 나오는 패턴을 러스트에서도 구현할 수 있음
+
+// 근데, 러스트는 탄탄한 컴파일러로 모든 에러를 잡아주는데, 굳이 상태 흐름같은 방법을 안쓰고도
+// 소유권같은 러스트만의 장점으로 코딩할 수 있기에, 코딩 전에 한번 생각해보기!
