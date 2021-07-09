@@ -1,0 +1,12 @@
+/home/flowersamda/Rust/tasks/requests/target/debug/deps/httparse-30e34cd09516f920.rmeta: /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/lib.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/iter.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/macros.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/mod.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/sse42.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/avx2.rs
+
+/home/flowersamda/Rust/tasks/requests/target/debug/deps/libhttparse-30e34cd09516f920.rlib: /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/lib.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/iter.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/macros.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/mod.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/sse42.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/avx2.rs
+
+/home/flowersamda/Rust/tasks/requests/target/debug/deps/httparse-30e34cd09516f920.d: /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/lib.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/iter.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/macros.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/mod.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/sse42.rs /home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/avx2.rs
+
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/lib.rs:
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/iter.rs:
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/macros.rs:
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/mod.rs:
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/sse42.rs:
+/home/flowersamda/.cargo/registry/src/github.com-1ecc6299db9ec823/httparse-1.4.1/src/simd/avx2.rs:
