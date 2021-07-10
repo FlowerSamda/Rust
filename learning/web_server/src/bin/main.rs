@@ -1,11 +1,19 @@
+extern crate web_server;
+use web_server::ThreadPool;
+
 use std::io::prelude::*;    // 스트림으로부터 읽고 쓰는 것을 허용하는 특성에 접근할 수 있도록 함 
 use std::net::TcpListener;  
 use std::net::TcpStream;
 use std::fs::File;
+use std::thread;
+use std::time::Duration;
+
 
 fn main() {
     // TCP 연결 수신을 할 IP주소  * 80포트는 관리자 권한 필요, 비 관리자는 1024이상 포트만 사용 가능
-    let listener = TcpListener::bind("127.0.0.1:8545").unwrap();
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
+
 
     // incoming 메소드는 스트림의 차례에 대한 반복자를 반환(tcpStream)
     // strean은 클라이언트-서버 간의 열려있는 커넥션을 의미 
@@ -13,7 +21,10 @@ fn main() {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        handle_connection(stream);
+        pool.execute(|| {
+            handle_connection(stream);
+        });
+        
     }
 }
 
@@ -21,26 +32,27 @@ fn main() {
 
 // mut stream을 선언한 이유: TcpStream 인스턴스가 내부에서 어떤 데이터가 반환되는지 추적하기 때문!
 fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 512];  // 버퍼를 읽을 데이터를 저장할 스택에 선언 (512바이트)
+    let mut buffer = [0; 2048];  // 버퍼를 읽을 데이터를 저장할 스택에 선언 (512바이트)
     stream.read(&mut buffer).unwrap();  // TcpStream으로부터 읽어들인 바이트를 버퍼로 집어넣음
 
     let get = b"GET / HTTP/1.1\r\n";
+    let sleep = b"GET /sleep HTTP/1.1\r\n";
 
-    let (status_line, file_name) = if buffer.starts_with(get) {
+    let (status_line, filename) = if buffer.starts_with(get) {
+        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+    } else if buffer.starts_with(sleep) {
+        thread::sleep(Duration::from_secs(5));
         ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
     } else {
         ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
     };
 
-    let mut file = File::open(file_name).unwrap();
-
+    let mut file = File::open(filename).unwrap();
     let mut contents = String::new();
+
     file.read_to_string(&mut contents).unwrap();
 
-    let response = format!("{}{}",
-    status_line,
-    contents
-    );
+    let response = format!("{}{}", status_line, contents);
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();  // flush: 모든 바이트들이 커넥션으로 쓰여질 때까지 프로그램을 대기
